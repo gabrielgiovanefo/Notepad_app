@@ -22,6 +22,17 @@ body {
     box-shadow: 0 0 20 rgba(0,0,0,0.1);
 }
 
+.credits{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fffef8;
+    font-size: 2rem;
+    color: #222;
+    text-align: center;
+}
+
 /* === Notepad Area === */
 .notepad {
     min-height: 99vh;
@@ -40,6 +51,18 @@ body {
     text-decoration: none;
     font-size: 1rem;
     font-family: "Segoe UI", Arial, sans-serif;
+    color: #0056b3;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+a{
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 30px #aaa;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
     color: #0056b3;
     transition: color 0.2s ease, text-shadow 0.2s ease;
 }
@@ -99,7 +122,7 @@ textarea:focus {
 }
 
 /* === Buttons === */
-button {
+button, #lang-switch  {
     box-shadow:0 0 10px rgba(0,0,0,0.05);
     background: #0050bb;
     color: #fff;
@@ -119,43 +142,114 @@ button:hover {
     text-shadow: none;
 }
 
-
-/* --- Mobile Responsiveness (Safe Tweaks) --- */
-
-/* prevent horizontal scrolling */
-html, body {
-  width: 100%;
-  overflow-x: hidden;
+#reminder_at{
+    resize: none !important;
+    overflow: auto !important;
+    width: 20%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0000005f;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-/* make layout fit smaller screens but keep style */
-.login, .notepad {
-  width: 95%;
-  margin: 0 auto;
-  padding: 0rem;
-  box-sizing: border-box;
+.reminder-popup {
+    position: fixed; 
+    right: 0px; 
+    top: 0px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0000005f;
+    width: 300px; 
+    z-index: 10000;
 }
 
-/* textareas and inputs fit screen width */
-textarea, input[type="text"], input[type="password"] {
-  width: 95%;
-  max-width: 100%;
-  font-size: 1rem;
-  box-sizing: border-box;
+@media (max-width: 768px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* make layout fit smaller screens but keep style */
+  .login, .notepad, .credits{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0rem;
+    box-sizing: border-box;
+    font-size: 1.5rem; 
+  }
+
+  /* textareas and inputs fit screen width */
+  textarea, input[type="text"], input[type="password"] {
+    width: 95%;
+    max-width: 100%;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  /* keep Save / Done buttons side by side but wrap if needed */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5rem;
+  }
+
+  li {
+    display: block;
+    justify-content: center;
+    margin-inline-start: -6%;
+  }
+
+  button{
+    padding: 10px;
+  }
 }
 
-/* keep Save / Done buttons side by side but wrap if needed */
-.button-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10.5rem;
-}
-
-/* smaller screens: make buttons stack nicely */
 @media (max-width: 600px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* make layout fit smaller screens but keep style */
+  .login, .notepad, .credits{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0rem;
+    box-sizing: border-box;
+  }
+
+  /* textareas and inputs fit screen width */
+  textarea, input[type="text"], input[type="password"] {
+    width: 95%;
+    max-width: 100%;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  /* keep Save / Done buttons side by side but wrap if needed */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0rem;
+  }
+
   button {
-    width: 48%;
+    width: 50%;
     font-size: 0.9rem;
     padding: 0.6rem;
   }
@@ -170,14 +264,49 @@ textarea, input[type="text"], input[type="password"] {
     padding: 0.75rem;
   }
 
-  li.notes {
+  .notes {
     width: 100%;
     margin-bottom: 1rem;
   }
+  li{
+    display: block;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1rem;
+    margin-inline-start: -5%;
+  }
 }
 
-/* ultra small screens (phones under 400px) */
 @media (max-width: 400px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* make layout fit smaller screens but keep style */
+  .login, .notepad, .credits {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0rem;
+    box-sizing: border-box;
+  }
+
+  /* textareas and inputs fit screen width */
+  textarea, input[type="text"], input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  /* keep Save / Done buttons side by side but wrap if needed */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0rem;
+  }
+
   button {
     width: 100%;
   }
@@ -186,3 +315,4 @@ textarea, input[type="text"], input[type="password"] {
     font-size: 0.9rem;
   }
 }
+

@@ -1,19 +1,29 @@
-<ul>
+<ul id="notes-container">
     {% for note in notes %}
-    <li>
+    <li class="note"
+        data-note-id="{{ note.id }}"
+        data-completed="{{ '1' if note.completed else '0' }}"
+        {% if note.reminder_at %} data-reminder="{{ note.reminder_at.strftime('%Y-%m-%dT%H:%M:%S') }}" {% endif %}
+        data-reminder-sent="{{ '1' if note.reminder_sent else '0' }}"
+        data-created-at="{{ note.created_at.strftime('%Y-%m-%dT%H:%M:%S') }}">
+        
         <form id="edit-form-{{ note.id }}" method="post" action="{{ url_for('edit_note', note_id=note.id) }}" class="note-edit">
             <input type="text" name="title" value="{{ note.title }}" placeholder="Note title" required><br><br>
-            <textarea name="content">{{ note.content }}</textarea>
+            <textarea name="content">{{ note.content }}</textarea><br>
+            
+            <label for="reminder_at_{{ note.id }}" style="font-size: 0.8rem;">{{ t['remind_at'] }}</label>
+            <input id="reminder_at_{{ note.id }}" name="reminder_at" type="datetime-local"
+                   value="{{ note.reminder_at.strftime('%Y-%m-%dT%H:%M') if note.reminder_at else '' }}">
         </form>
 
         <form id="done-form-{{ note.id }}" method="post" action="{{ url_for('mark_done', note_id=note.id) }}" class="note-done"></form>
 
         <div class="button-row">
-            <button type="submit" form="edit-form-{{ note.id }}" class="btn btn-save">Save</button>
-            <button type="submit" form="done-form-{{ note.id }}" class="btn btn-done">Done</button>
+            <button type="submit" form="edit-form-{{ note.id }}" class="btn btn-save">{{ t['save'] }}</button>
+            <button type="submit" form="done-form-{{ note.id }}" class="btn btn-done">{{ t['done'] }}</button>
         </div>
     </li>
     {% else %}
-        <p>No notes found.</p>
+        <p>{{ t['no_notes'] }}</p>
     {% endfor %}
 </ul>

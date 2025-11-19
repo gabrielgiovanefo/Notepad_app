@@ -1,13 +1,11 @@
-/* === Global === */
 body {
-    background-color: #fdfdfc;         /* light paper background */
-    color: #222;                       /* dark ink-like text */
+    background-color: #fdfdfc;
+    color: #222;
     font-family: "Segoe UI", Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* === Login Page === */
 .login {
     display: flex;
     flex-direction: column;
@@ -22,7 +20,17 @@ body {
     box-shadow: 0 0 20 rgba(0,0,0,0.1);
 }
 
-/* === Notepad Area === */
+.credits{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fffef8;
+    font-size: 2rem;
+    color: #222;
+    text-align: center;
+}
+
 .notepad {
     min-height: 99vh;
     background: #fdfdfc;
@@ -32,7 +40,6 @@ body {
     font-family: Georgia, serif;
 }
 
-/* === Navigation & Links === */
 .notes, a {
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -40,6 +47,18 @@ body {
     text-decoration: none;
     font-size: 1rem;
     font-family: "Segoe UI", Arial, sans-serif;
+    color: #0056b3;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+a{
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 30px #aaa;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
     color: #0056b3;
     transition: color 0.2s ease, text-shadow 0.2s ease;
 }
@@ -61,7 +80,6 @@ input{
     line-height: 1.5;
     outline: none;
     box-shadow: 0 0 10px #0000005f;
-
     text-decoration: none;
     font-size: 1rem;
     font-family: "Arial", monospace;
@@ -74,7 +92,6 @@ li {
     margin: 10px 10px;
 }
 
-/* === Textarea (Notes) === */
 textarea {
     resize: none !important;
     overflow: auto !important;
@@ -98,8 +115,7 @@ textarea:focus {
     background-color: #fff;
 }
 
-/* === Buttons === */
-button {
+button, #lang-switch {
     box-shadow:0 0 10px rgba(0,0,0,0.05);
     background: #0050bb;
     color: #fff;
@@ -119,3 +135,36 @@ button:hover {
     text-shadow: none;
 }
 
+#reminder_at{
+    resize: none !important;
+    overflow: auto !important;
+    width: 20%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0000005f;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.reminder-popup {
+    position: fixed; 
+    right: 0px; 
+    top: 0px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0000005f;
+    width: 300px; 
+    z-index: 10000;
+}

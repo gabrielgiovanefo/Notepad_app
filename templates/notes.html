@@ -1,53 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Notes</title>
+    <title>{{ t['welcome'] }}</title>
     <script src="/static/script.js" defer></script>
     <link id="theme-link" rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="notepad">
-    <button id="theme-switch">Switch Theme</button> 
-    <button onclick="window.location.href='/logout'">Logout</button>
+    <!-- theme and language controls -->
+    <div class="top-controls">
+      <button id="theme-switch">{{ t['switch_theme'] }}</button>
+      <select id="lang-switch" aria-label="Language switch">
+        <option value="pt" {% if current_lang == 'pt' %}selected{% endif %}>PT</option>
+        <option value="en" {% if current_lang == 'en' %}selected{% endif %}>EN</option>
+      </select>
+      <button onclick="window.location.href='/logout'">{{ t['logout'] }}</button>
+    </div>
 
-    <h2>Welcome to Your Notepad</h2>
+    <h2>{{ t['welcome'] }}</h2>
 
-    <div  class="notes">
+    <div class="notes">
         <form method="post"><br>
-            <input type="text" name="title" placeholder="Note title" required><br><br>
-            <textarea name="content" placeholder="Write a new note..." required></textarea><br>
-            <button type="submit">Add Note</button>
+            <input type="text" name="title" placeholder="{{ t['note_title_placeholder'] }}" required><br><br>
+            <textarea name="content" placeholder="{{ t['write_note'] }}" required></textarea><br>
+            <button type="submit">{{ t['add_note'] }}</button>
+            <label for="reminder_at">{{ t['remind_at'] }}</label>
+            <input id="reminder_at" name="reminder_at" type="datetime-local" />
         </form><br>
     </div>
     <br>
-    <div  class="notes">
-        <h3>Your Notes</h3>
-        <button onclick="window.location.href='{{ url_for('completed_notes') }}'">View Completed Notes</button>
-        <input type="text" id="search" placeholder="Search notes...">
-        <div id="notes-container">
-            <ul>
-                {% for note in notes %}
-                <li>
-                    <form id="edit-form-{{ note.id }}" method="post" action="{{ url_for('edit_note', note_id=note.id) }}" class="note-edit">
-                        <input type="text" name="title" value="{{ note.title }}" placeholder="Note title" required><br><br>
-                        <textarea name="content">{{ note.content }}</textarea>
-                    </form>
-
-                    <form id="done-form-{{ note.id }}" method="post" action="{{ url_for('mark_done', note_id=note.id) }}" class="note-done"></form>
-
-                    <div class="button-row">
-                        <button type="submit" form="edit-form-{{ note.id }}" class="btn btn-save">Save</button>
-                        <button type="submit" form="done-form-{{ note.id }}" class="btn btn-done">Done</button>
-                    </div>
-                </li>
-                {% else %}
-                    <p>No notes found.</p>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="notes">
+        <h3>{{ t['your_notes'] }}</h3>
+        <button onclick="window.location.href='{{ url_for('completed_notes') }}'">{{ t['view_completed'] }}</button>
+        <input type="text" id="search" placeholder="{{ t['search_notes'] }}">
+        {% include "partials/notes_list.html" %}
     </div>
 
     <br>
-    <a href="/credits">© 2025 Organize — Desenvolvido por Arthur Araújo e Gabriel Giovane</a>
+    <a href="/credits">{{ t['credits'] }}</a>
 </body>
 </html>

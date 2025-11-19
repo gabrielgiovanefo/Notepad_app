@@ -7,14 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="login">
-    <h2>Create Account</h2>
+    <h2>{{ t['create_account'] }}</h2>
     <form method="post">
         <input type="text" name="username" placeholder="Username" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
-        <button type="submit">Register</button>
+        <button type="submit">{{ t['register'] }}</button>
     </form>
-    <button onclick="window.location.href='/login'">Login</button>
+    <button onclick="window.location.href='/login'">{{ t['login_page'] }}</button>
     <p></p>
-    <button id="theme-switch">Switch Theme</button> 
+    <button id="theme-switch">Switch Theme</button>
+    <select id="lang-switch" aria-label="Language switch">
+        <option value="pt" {% if current_lang == 'pt' %}selected{% endif %}>PT</option>
+        <option value="en" {% if current_lang == 'en' %}selected{% endif %}>EN</option>
+    </select> 
 </body>
 </html>

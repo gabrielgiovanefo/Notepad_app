@@ -11,10 +11,14 @@
     <form method="post">
         <input type="text" name="username" placeholder="Username" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
-        <button type="submit">Login</button>
+        <button type="submit">{{ t['login'] }}</button>
     </form>
-    <button onclick="window.location.href='/register'">Register</button>
+    <button onclick="window.location.href='/register'">{{ t['create_account'] }}</button>
     <p></p>
-    <button id="theme-switch">Switch Theme</button> 
+    <button id="theme-switch">Switch Theme</button>
+    <select id="lang-switch" aria-label="Language switch">
+        <option value="pt" {% if current_lang == 'pt' %}selected{% endif %}>PT</option>
+        <option value="en" {% if current_lang == 'en' %}selected{% endif %}>EN</option>
+    </select> 
 </body>
 </html>

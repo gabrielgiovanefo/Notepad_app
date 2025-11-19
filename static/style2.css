@@ -1,28 +1,36 @@
-/* === Global === */
 body {
-    background-color: #000;          /* darker background */
-    color: #0f0;                     /* matrix green text */
+    background-color: #000;
+    color: #0f0;
     font-family: monospace;
     margin: 0;
     padding: 0;
 }
 
-/* === Login Page === */
 .login {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 99.6vh;                   /* fill screen height */
+    height: 99.6vh;
     background: #000;
     font-size: 2rem;
     color: #0f0;
     text-align: center;
-    border: 2px solid #0f0;         
-    box-shadow: 0 0 20px #0f0;     
+    border: 2px solid #0f0;
+    box-shadow: 0 0 20px #0f0;
 }
 
-/* === Notepad Area === */
+.credits{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    font-size: 2rem;
+    color: #0f0;
+    text-align: center;
+}
+
 .notepad {
     min-height: 99vh;
     background: #000;
@@ -32,8 +40,7 @@ body {
     font-family: monospace;
 }
 
-/* === Navigation & Links === */
-.notes,a {
+.notes {
     border-radius: 5px;
     border: 1px solid #0f0;
     box-shadow: 0 0 30px #090;
@@ -44,16 +51,28 @@ body {
     transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
+a{
+    border-radius: 5px;
+    border: 1px solid #0f0;
+    padding: 10px;
+    box-shadow: 0 0 10px #090;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    color: #0f0;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
 a:hover, .notes:hover {
     color: #fff;
-    text-shadow: 0 0 100px #0f0;      
+    text-shadow: 0 0 100px #0f0;
 }
 
 input{
     resize: none !important;
     overflow: auto !important;
     width: 75%;
-    border: 2px solid #0f0;         
+    border: 2px solid #0f0;
     border-radius: 5px;
     background-color: #111;
     color: #0f0;
@@ -61,7 +80,6 @@ input{
     line-height: 1.5;
     outline: none;
     box-shadow: 0 0 10px #0f0;
-    
     text-decoration: none;
     font-size: 1rem;
     font-family: "Arial", monospace;
@@ -74,13 +92,12 @@ li {
     margin: 10px 10px;
 }
 
-/* === Textarea (Notes) === */
 textarea {
     resize: none !important;
     overflow: auto !important;
     width: 80%;
     min-height: 170px;
-    border: 2px solid #0f0;       
+    border: 2px solid #0f0;
     border-radius: 10px;
     background-color: #111;
     color: #0f0;
@@ -98,8 +115,7 @@ textarea:focus {
     background-color: #000;
 }
 
-/* === Buttons === */
-button {
+button, #lang-switch {
     box-shadow: 0 0 10px #0f0;
     background: #000;
     color: #0f0;
@@ -117,4 +133,38 @@ button:hover {
     background: #0f0;
     color: #000;
     text-shadow: none;
+}
+
+#reminder_at{
+    resize: none !important;
+    overflow: auto !important;
+    width: 20%;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    background-color: #111;
+    color: #0f0;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.reminder-popup {
+    position: fixed; 
+    right: 0px; 
+    top: 0px;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    background-color: #000;
+    color: #0f0;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+    width: 300px; 
+    z-index: 10000;
 }

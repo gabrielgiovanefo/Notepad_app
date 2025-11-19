@@ -1,14 +1,16 @@
-<ul>
+<ul id="notes-container">
     {% for note in notes %}
     <li>
         <input type="text" value="{{ note.title }}" readonly><br>
         <textarea readonly>{{ note.content }}</textarea>
+        <input id="reminder_at_{{ note.id }}" name="reminder_at" type="datetime-local"
+            value="{{ note.reminder_at.strftime('%Y-%m-%dT%H:%M') if note.reminder_at else '' }}" readonly>
         
         <form method="post" action="{{ url_for('delete_note', note_id=note.id) }}">
-            <button type="submit">Delete</button>
+            <button type="submit">{{ t['delete'] }}</button>
         </form>
     </li>
     {% else %}
-        <p>No notes found.</p>
+        <p>{{ t['no_notes'] }}</p>
     {% endfor %}
 </ul>
