@@ -1,180 +1,164 @@
 /* === Global === */
 body {
-  background-color: #000;          /* darker background */
-  color: #0f0;                     /* matrix green text */
-  font-family: monospace;
-  margin: 0;
-  padding: 0;
+    background-color: #000;          /* darker background */
+    color: #0f0;                     /* matrix green text */
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
 }
 
 /* === Login Page === */
 .login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 99.6vh;                   /* fill screen height */
-  background: #000;
-  font-size: 2rem;
-  color: #0f0;
-  text-align: center;
-  border: 2px solid #0f0;         
-  box-shadow: 0 0 20px #0f0;     
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 99.6vh;                   /* fill screen height */
+    background: #000;
+    font-size: 2rem;
+    color: #0f0;
+    text-align: center;
+    border: 2px solid #0f0;         
+    box-shadow: 0 0 20px #0f0;     
 }
 
 .credits{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-  font-size: 2rem;
-  color: #0f0;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    font-size: 2rem;
+    color: #0f0;
+    text-align: center;
 }
 
 /* === Notepad Area === */
 .notepad {
-  min-height: 99vh;
-  background: #000;
-  color: #0f0;
-  text-align: center;
-  padding: 20px;
-  font-family: monospace;
+    min-height: 99vh;
+    background: #000;
+    color: #0f0;
+    text-align: center;
+    padding: 20px;
+    font-family: monospace;
 }
 
 /* === Navigation & Links === */
 .notes {
-  border-radius: 5px;
-  border: 1px solid #0f0;
-  box-shadow: 0 0 30px #090;
-  text-decoration: none;
-  font-size: 1rem;
-  font-family: "Arial", monospace;
-  color: #0f0;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+    border-radius: 5px;
+    border: 1px solid #0f0;
+    box-shadow: 0 0 30px #090;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    color: #0f0;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 a{
-  border-radius: 5px;
-  border: 1px solid #0f0;
-  padding: 0px;
-  box-shadow: 0 0 10px #090;
-  text-decoration: none;
-  font-size: 1rem;
-  font-family: "Arial", monospace;
-  color: #0f0;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+    border-radius: 5px;
+    border: 1px solid #0f0;
+    padding: 0px;
+    box-shadow: 0 0 10px #090;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    color: #0f0;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 a:hover, .notes:hover {
-  color: #fff;
-  text-shadow: 0 0 100px #0f0;      
+    color: #fff;
+    text-shadow: 0 0 100px #0f0;      
 }
 
 input{
-  resize: none !important;
-  overflow: auto !important;
-  width: 75%;
-  border: 1px solid #0f0;         
-  border-radius: 5px;
-  background-color: #111;
-  color: #0f0;
-  padding: 10px;
-  outline: none;
-  box-shadow: 0 0 10px #0f0;
-  
-  text-decoration: none;
-  font-family: "Arial", monospace;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+    resize: none !important;
+    overflow: auto !important;
+    width: 75%;
+    border: 1px solid #0f0;         
+    border-radius: 5px;
+    background-color: #111;
+    color: #0f0;
+    padding: 10px;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+    
+    text-decoration: none;
+    font-family: "Arial", monospace;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 li {
-  list-style-type: none;
-  display: inline-block;
-  margin: 0px 0px;
+    list-style-type: none;
+    display: inline-block;
+    margin: 0px 0px;
 }
 
 /* === Textarea (Notes) === */
 textarea {
-  resize: none !important;
-  overflow: auto !important;
-  width: 80%;
-  min-height: 170px;
-  border: 1px solid #0f0;       
-  border-radius: 10px;
-  background-color: #111;
-  color: #0f0;
-  padding: 10px;
-  font-size: 1rem;
-  line-height: 1.5;
-  outline: none;
-  box-shadow: 0 0 10px #0f0;
-  font-family: "Arial", monospace;
-  
-  text-decoration: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+    resize: none !important;
+    overflow: auto !important;
+    width: 80%;
+    min-height: 170px;
+    border: 1px solid #0f0;       
+    border-radius: 10px;
+    background-color: #111;
+    color: #0f0;
+    padding: 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+    font-family: "Arial", monospace;
+    
+    text-decoration: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 textarea:focus ,input:focus{
-  border-color: #fff;
-  box-shadow: 0 0 20px #0f0, 0 0 5px #fff;
-  background-color: #000;
+    border-color: #fff;
+    box-shadow: 0 0 20px #0f0, 0 0 5px #fff;
+    background-color: #000;
 }
 
 /* === Buttons === */
 button, #lang-switch {
-  box-shadow: 0 0 10px #0f0;
-  background: #000;
-  color: #0f0;
-  border: 2px solid #0f0;
-  padding: 10px 20px;
-  margin: 10px;
-  font-family: monospace;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    box-shadow: 0 0 10px #0f0;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    margin: 10px;
+    font-family: monospace;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 button:hover {
-  background: #0f0;
-  color: #000;
-  text-shadow: none;
+    background: #0f0;
+    color: #000;
+    text-shadow: none;
 }
 
 #reminder_at{
-  resize: none !important;
-  overflow: auto !important;
-  width: 20%;
-  border: 2px solid #0f0;
-  border-radius: 5px;
-  background-color: #111;
-  color: #0f0;
-  padding: 10px;
-  line-height: 1.5;
-  outline: none;
-  box-shadow: 0 0 10px #0f0;
-  text-decoration: none;
-  font-size: 1rem;
-  font-family: "Arial", monospace;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-}
-
-.reminder-popup {
-  position: fixed; 
-  right: 0px; 
-  top: 0px;
-  border: 2px solid #0f0;
-  border-radius: 5px;
-  background-color: #000;
-  color: #0f0;
-  padding: 10px;
-  line-height: 1.5;
-  outline: none;
-  box-shadow: 0 0 10px #0f0;
-  width: 300px; 
-  z-index: 10000;
+    resize: none !important;
+    overflow: auto !important;
+    width: 20%;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    background-color: #111;
+    color: #0f0;
+    padding: 10px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Arial", monospace;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 @media (max-width: 768px) {

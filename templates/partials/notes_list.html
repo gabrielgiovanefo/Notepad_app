@@ -1,3 +1,4 @@
+<!-- partials/notes_list.html -->
 <ul id="notes-container">
     {% for note in notes %}
     <li class="note"
@@ -11,11 +12,45 @@
             <input type="text" name="title" value="{{ note.title }}" placeholder="Note title" required><br><br>
             <textarea name="content">{{ note.content }}</textarea><br>
             
+            <!-- File attachment area -->
+            <div class="file-attachment-area" id="file-drop-{{ note.id }}">
+                <div class="drop-zone">
+                    <p>{{ t['drag_drop_files'] or 'Drag and drop files here' }}</p>
+                    <p>or</p>
+                    <label class="file-input-label">
+                        <span>{{ t['browse_files'] or 'Browse files' }}</span>
+                        <input type="file" class="file-input" multiple data-note-id="{{ note.id }}">
+                    </label>
+                </div>
+                <div class="upload-progress" id="upload-progress-{{ note.id }}" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="progress-text">Uploading...</p>
+                </div>
+                <div class="attached-files" id="attached-files-{{ note.id }}">
+                    {% if note.files %}
+                        {% for file in note.files %}
+                        <div class="file-item" data-file-id="{{ file.id }}">
+                            <span class="file-name">{{ file.filename }}</span>
+                            <a href="/download_file/{{ file.id }}" class="download-btn" title="{{ t['download'] or 'Download' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
             <label for="reminder_at_{{ note.id }}" style="font-size: 0.8rem;">{{ t['remind_at'] }}</label>
             <input id="reminder_at_{{ note.id }}" name="reminder_at" type="datetime-local"
                    value="{{ note.reminder_at.strftime('%Y-%m-%dT%H:%M') if note.reminder_at else '' }}">
         </form>
-
+        
         <form id="done-form-{{ note.id }}" method="post" action="{{ url_for('mark_done', note_id=note.id) }}" class="note-done"></form>
 
         <div class="button-row">

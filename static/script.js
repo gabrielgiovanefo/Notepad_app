@@ -1,13 +1,13 @@
 // Consolidated DOMContentLoaded event listener
 document.addEventListener("DOMContentLoaded", async () => {
-    // Send timezone first and wait for it to complete
-    await sendTimezoneToServer();
-    
-    // Then initialize all functionality
+    // Initialize all functionality
     initSearch();
     initTheme();
     initNotifications();
     await initLanguage();
+    
+    // Initialize file upload functionality
+    initFileUpload();
 });
 
 // Search functionality - consolidated
@@ -43,212 +43,112 @@ function initSearch() {
 
 // Theme functionality
 function initTheme() {
-    const themeLink = document.getElementById("theme-link"); 
+    const body = document.body;
     const switchButton = document.getElementById("theme-switch");
-    
-    if (!themeLink || !switchButton) return;
-    
-    // Theme type definitions (desktop ↔ mobile pairs)
-    const themes = {
-        default: {
-            desktop: "/static/style1.css",
-            mobile: "/static/style1_mobile.css"
-        },
-        matrix: {
-            desktop: "/static/style2.css",
-            mobile: "/static/style2_mobile.css"
-        },
-        light: {
-            desktop: "/static/style3.css",
-            mobile: "/static/style3_mobile.css"
-        }
-    };
-    
-    const themeOrder = ["matrix", "light"];
-    
-    // Detect mobile device or narrow portrait ratio
-    function isMobileDevice() {
-        const ua = navigator.userAgent;
-        const isTouch =
-            /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-        const aspectRatio = window.innerWidth / window.innerHeight;
-        const isPortraitPhone = aspectRatio < 0.7; // ~9:16 or narrower
-        return isTouch || isPortraitPhone;
+
+    if (!switchButton) return;
+
+    // --- Load saved theme on page load ---
+    // 'dark' is the name of our class, so we check for that.
+    const currentTheme = localStorage.getItem("theme");
+    if (currentTheme === "dark") {
+        body.classList.add("dark-theme");
     }
-    
-    // Load saved theme (defaults to matrix)
-    let currentTheme = localStorage.getItem("themeName") || "matrix";
-    
-    function applyTheme(name) {
-        if (!themes[name]) name = "matrix";
-        const selected = isMobileDevice() ? themes[name].mobile : themes[name].desktop;
-        themeLink.href = selected;
-        localStorage.setItem("themeName", name);
-    }
-    
-    // Initial apply
-    applyTheme(currentTheme);
-    
-    // Theme switch button
+
+    // --- Theme switch button logic ---
     switchButton.addEventListener("click", () => {
-        const idx = themeOrder.indexOf(currentTheme);
-        const next = (idx + 1) % themeOrder.length;
-        currentTheme = themeOrder[next];
-        applyTheme(currentTheme);
-    });
-    
-    // Recheck if user rotates screen or resizes window
-    window.addEventListener("resize", () => {
-        applyTheme(currentTheme);
-    });
-}
+        // Toggle the 'dark-theme' class on the body
+        body.classList.toggle("dark-theme");
 
-// Timezone functionality - consolidated
-function sendTimezoneToServer() {
-    const offset = new Date().getTimezoneOffset();
-    return fetch('/set_timezone', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offset: offset }),
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Failed to set timezone");
-        return response.json();
-    })
-    .catch(error => {
-        console.error("Error setting timezone:", error);
-        throw error; // Re-throw to maintain the rejection
-    });
-}
-
-// Notification functionality
-function initNotifications() {
-    // First, check if the browser even supports EventSource
-    if (!window.EventSource) {
-        console.error("Your browser does not support Server-Sent Events. Notifications will not work.");
-        return;
-    }
-
-    // Create helper function for fetch operations
-    function safeFetch(url, options = {}) {
-        return fetch(url, {
-            credentials: 'same-origin',
-            ...options
-        })
-        .then(response => {
-            if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-            return response;
-        });
-    }
-    
-    function requestNotificationPermission() {
-        if ("Notification" in window && Notification.permission === "default") {
-            Notification.requestPermission().then(permission => {
-                console.log("Notification permission:", permission);
-            });
+        // Save the new state to localStorage
+        if (body.classList.contains("dark-theme")) {
+            localStorage.setItem("theme", "dark");
+        } else {
+            localStorage.setItem("theme", "light");
         }
-    }
-    
-    function showPopup(noteId, title, content) {
-    // Show browser notification if permission is granted
-    if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(title || "Reminder", {
-            body: content ? (content.length > 200 ? content.slice(0, 200) + "…" : content) : "No content",
-            icon: "/static/favicon.ico"
-        });
-    }
-
-    fetch('partials/popup_partial.html')
-        .then(response => response.text())
-        .then(html => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            const popup = tempDiv.querySelector('.reminder-popup');
-            
-            popup.querySelector('#popup-title').textContent = title || "Reminder";
-            const contentText = content ? (content.length > 200 ? content.slice(0, 200) + "…" : content) : "No content";
-            popup.querySelector('#popup-content').textContent = contentText;
-            
-            document.body.appendChild(popup);
-            
-            const closePopup = () => popup.remove();
-            
-            popup.querySelector(".dismiss").onclick = () => {
-                safeFetch(`/reminded/${noteId}`, { method: 'POST' })
-                    .catch(error => console.error("Error marking as reminded:", error));
-                closePopup();
-            };
-            
-            popup.querySelector(".mark-done").onclick = () => {
-                safeFetch(`/done/${noteId}`, { method: 'POST' })
-                    .then(() => safeFetch(`/reminded/${noteId}`, { method: 'POST' }))
-                    .catch(error => console.error("Error marking note as done:", error))
-                    .finally(closePopup);
-            };
-            
-            // Auto-close after 2 minutes
-            setTimeout(closePopup, 120000);
-        })
-        .catch(error => {
-            console.error("Failed to load popup template:", error);
-        });
+    });
 }
-    
-    function setupNotifications() {
-        console.log("Attempting to connect to /notifications for Server-Sent Events.");
-        const eventSource = new EventSource('/notifications');
-    
-        eventSource.onopen = function() {
-            console.log("Successfully connected to the notification stream.");
-        };
-    
-        eventSource.onmessage = function(event) {
-            const message = JSON.parse(event.data);
-            
-            if (message.type === 'connected') {
-                console.log("Notification stream connected successfully");
-            } else if (message.type === 'heartbeat') {
-                // Just a heartbeat to keep the connection alive
-                console.log("Heartbeat received");
-            } else if (message.type === 'reminders') {
-                console.log("Received reminders from server:", message.data);
-                message.data.forEach(reminder => {
-                    showPopup(reminder.id, reminder.title, reminder.content);
-                    safeFetch(`/reminded/${reminder.id}`, { method: 'POST' })
-                        .catch(error => console.error("Error marking as reminded:", error));
-                });
-            } else if (message.type === 'error') {
-                console.error("Error from notification stream:", message.message);
-            }
-        };
-    
-        eventSource.onerror = function(err) {
-            console.error("EventSource connection failed.", err);
-            console.error("EventSource readyState:", eventSource.readyState);
-            
-            // Log common causes for the user to check
-            console.error(
-                "This error is usually caused by one of the following:\n" +
-                "1. The server endpoint '/notifications' does not exist (404 Not Found).\n" +
-                "2. The server returned an error status (e.g., 500 Internal Server Error).\n" +
-                "3. The server did not respond with 'Content-Type: text/event-stream'.\n" +
-                "4. A network issue or authentication problem.\n" +
-                "Please check the 'Network' tab in your browser's developer tools for more details on the failing request."
-            );
 
-            eventSource.close();
-            
-            // Wait 5 seconds before trying to reconnect
-            console.log("Will attempt to reconnect in 5 seconds...");
-            setTimeout(setupNotifications, 5000);
-        };
+// Simplified Notification functionality
+function initNotifications() {
+    // Request notification permission
+    if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
     }
     
-    // Initialize notifications
-    requestNotificationPermission();
-    setupNotifications();
+    // Function to check for reminders
+    function checkForReminders() {
+        fetch('/get_reminders')
+            .then(response => response.json())
+            .then(reminders => {
+                if (reminders.length > 0) {
+                    reminders.forEach(reminder => {
+                        // Show browser notification
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification(reminder.title || "Reminder", {
+                                body: reminder.content ? 
+                                    (reminder.content.length > 200 ? reminder.content.slice(0, 200) + "…" : reminder.content) : 
+                                    "No content",
+                                icon: "/static/favicon.ico"
+                            });
+                        }
+                        
+                        // Show popup
+                        showPopup(reminder.id, reminder.title, reminder.content);
+                        
+                        // Mark as reminded
+                        fetch(`/reminded/${reminder.id}`, { method: 'POST' })
+                            .catch(error => console.error("Error marking as reminded:", error));
+                    });
+                }
+            })
+            .catch(error => console.error("Error checking reminders:", error));
+    }
+    
+    // Check for reminders every minute
+    setInterval(checkForReminders, 60000);
+    
+    // Check immediately on page load
+    checkForReminders();
+    
+    // Function to show popup
+    function showPopup(noteId, title, content) {
+        fetch('/partials/popup_partial.html')
+            .then(response => response.text())
+            .then(html => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                
+                const popup = tempDiv.querySelector('.reminder-popup');
+                
+                popup.querySelector('#popup-title').textContent = title || "Reminder";
+                const contentText = content ? (content.length > 200 ? content.slice(0, 200) + "…" : content) : "No content";
+                popup.querySelector('#popup-content').textContent = contentText;
+                
+                document.body.appendChild(popup);
+                
+                const closePopup = () => popup.remove();
+                
+                popup.querySelector(".dismiss").onclick = () => {
+                    fetch(`/reminded/${noteId}`, { method: 'POST' })
+                        .catch(error => console.error("Error marking as reminded:", error));
+                    closePopup();
+                };
+                
+                popup.querySelector(".mark-done").onclick = () => {
+                    fetch(`/done/${noteId}`, { method: 'POST' })
+                        .then(() => fetch(`/reminded/${noteId}`, { method: 'POST' }))
+                        .catch(error => console.error("Error marking note as done:", error))
+                        .finally(closePopup);
+                };
+                
+                // Auto-close after 2 minutes
+                setTimeout(closePopup, 120000);
+            })
+            .catch(error => {
+                console.error("Failed to load popup template:", error);
+            });
+    }
 }
 
 // Language functionality
@@ -316,5 +216,208 @@ async function initLanguage() {
                 console.error("Language change failed", err);
             });
         });
+    }
+}
+
+// Consolidated file upload functionality
+function initFileUpload() {
+    // Check for both dropzone and file-attachment-area implementations
+    const dropzones = document.querySelectorAll(".dropzone");
+    const fileAttachmentAreas = document.querySelectorAll('.file-attachment-area');
+    
+    // Initialize dropzones if they exist
+    if (dropzones.length > 0) {
+        initDropzones();
+    }
+    
+    // Initialize file attachment areas if they exist
+    if (fileAttachmentAreas.length > 0) {
+        initFileAttachmentAreas();
+    }
+    
+    function initDropzones() {
+        document.querySelectorAll(".dropzone").forEach(zone => {
+            const input = zone.querySelector(".dropzone-input");
+            zone.addEventListener("click", () => input.click());
+            input.addEventListener("change", (e) => {
+                if (e.target.files.length) uploadFile(zone.dataset.noteId, e.target.files[0], zone);
+            });
+
+            zone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                zone.classList.add("dragover");
+            });
+            zone.addEventListener("dragleave", (e) => {
+                zone.classList.remove("dragover");
+            });
+            zone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                zone.classList.remove("dragover");
+                const file = e.dataTransfer.files[0];
+                if (file) uploadFile(zone.dataset.noteId, file, zone);
+            });
+        });
+    }
+
+    function initFileAttachmentAreas() {
+        document.querySelectorAll('.file-attachment-area').forEach(zone => {
+            const dropArea = zone.querySelector('.drop-zone');
+            const fileInput = zone.querySelector('.file-input');
+            const noteId = fileInput.getAttribute('data-note-id');
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            // Handle dropped files
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            // Handle file selection via input
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files, noteId);
+            });
+        });
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    function highlight(e) {
+        e.currentTarget.classList.add('drag-over');
+    }
+    
+    function unhighlight(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        const noteId = e.currentTarget.closest('.file-attachment-area').id.replace('file-drop-', '');
+        handleFiles(files, noteId);
+    }
+    
+    function handleFiles(files, noteId) {
+        if (files.length === 0) return;
+        
+        const progressContainer = document.getElementById(`upload-progress-${noteId}`);
+        const progressBar = progressContainer.querySelector('.progress-fill');
+        const progressText = progressContainer.querySelector('.progress-text');
+        const attachedFilesContainer = document.getElementById(`attached-files-${noteId}`);
+        
+        // Show progress bar
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Uploading...';
+        
+        // Create FormData for the upload
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+        
+        // Upload files
+        fetch(`/upload_file/${noteId}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Update progress bar
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Upload complete!';
+                
+                // Add file to the attached files list
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.setAttribute('data-file-id', data.file_id);
+                
+                const fileName = document.createElement('span');
+                fileName.className = 'file-name';
+                fileName.textContent = data.filename;
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.className = 'download-btn';
+                downloadLink.href = `/download_file/${data.file_id}`;
+                downloadLink.title = 'Download';
+                downloadLink.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                `;
+                
+                fileItem.appendChild(fileName);
+                fileItem.appendChild(downloadLink);
+                attachedFilesContainer.appendChild(fileItem);
+                
+                // Hide progress bar after a short delay
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 1500);
+            } else {
+                throw new Error(data.error || 'Upload failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Upload failed. Please try again.';
+            
+            // Hide progress bar after a short delay
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+            }, 3000);
+        });
+    }
+
+    async function uploadFile(noteId, file, zone) {
+        const fd = new FormData();
+        fd.append("file", file);
+        zone.classList.add("uploading");
+        try {
+            const res = await fetch(`/upload_file/${noteId}`, { method: "POST", body: fd });
+            const data = await res.json();
+            if (res.ok && data.ok) {
+                // append file to UI
+                const filesDiv = zone.parentElement.querySelector(".note-files");
+                if (filesDiv) {
+                    const d = document.createElement("div");
+                    d.className = "file-entry";
+                    const a = document.createElement("a");
+                    a.href = `/download_file/${data.file_id || ""}`; // if server returns file id, use it
+                    a.textContent = data.filename;
+                    // if server returned file id, set correct href
+                    if (data.file_id) a.href = `/download_file/${data.file_id}`;
+                    filesDiv.prepend(d);
+                    d.appendChild(a);
+                } else {
+                    // optionally refresh page
+                    location.reload();
+                }
+            } else {
+                alert(data.error || "Upload failed");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Upload error");
+        } finally {
+            zone.classList.remove("uploading");
+        }
     }
 }

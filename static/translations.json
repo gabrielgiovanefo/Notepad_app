@@ -22,7 +22,14 @@
     "register": "register",
     "create_account": "create account",
     "login_page": "back to login",
-    "no_notes": "No notes found."
+    "no_notes": "No notes found.",
+    "drag_drop_files": "Drag and drop files here",
+    "browse_files": "Browse files",
+    "download": "Download",
+    "google_connected": "Google Drive connected",
+    "google_not_connected": "Google Drive not connected",
+    "connect_google": "Connect Google Drive",
+    "disconnect_google": "Disconnect Google Drive"
 },
 "pt": {
     "switch_theme": "Mudar Tema",
@@ -47,6 +54,13 @@
     "register": "registrar",
     "create_account": "criar conta",
     "login_page": "pagina de login",
-    "no_notes": "Nenhuma nota encontrada."
+    "no_notes": "Nenhuma nota encontrada.",
+    "drag_drop_files": "Arraste e solte arquivos aqui",
+    "browse_files": "Procurar arquivos",
+    "download": "Baixar",
+    "google_connected": "Google Drive conectado",
+    "google_not_connected": "Google Drive não conectado",
+    "connect_google": "Conectar ao Google Drive",
+    "disconnect_google": "Desconectar Google Drive"
 }
 }

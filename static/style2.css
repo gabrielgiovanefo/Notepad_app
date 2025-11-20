@@ -42,7 +42,7 @@ body {
 
 .notes {
     border-radius: 5px;
-    border: 1px solid #0f0;
+    border: 2px solid #0f0;
     box-shadow: 0 0 30px #090;
     text-decoration: none;
     font-size: 1rem;
@@ -153,18 +153,119 @@ button:hover {
     transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-.reminder-popup {
-    position: fixed; 
-    right: 0px; 
-    top: 0px;
-    border: 2px solid #0f0;
-    border-radius: 5px;
-    background-color: #000;
-    color: #0f0;
+/* File attachment styles */
+.file-attachment-area {
+    margin: 10px 0;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
     padding: 10px;
-    line-height: 1.5;
-    outline: none;
-    box-shadow: 0 0 10px #0f0;
-    width: 300px; 
-    z-index: 10000;
+    background-color: #f9f9f9;
+}
+
+.drop-zone {
+    text-align: center;
+    padding: 15px;
+    color: #666;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.file-input {
+    display: none;
+}
+
+.attached-files {
+    margin-top: 10px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80%;
+    color: #000;
+}
+
+.download-btn {
+    color: #2196F3;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.upload-progress {
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #666;
+}
+
+.drop-zone.drag-over {
+    background-color: #e3f2fd;
+    border-color: #2196F3;
+}
+
+.google-drive-status {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.google-drive-status p {
+    margin: 0;
+}
+
+.google-drive-status button, .google-drive-status a {
+    padding: 5px 10px;
+    background-color: #4285F4;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.google-drive-status button:hover, .google-drive-status a:hover {
+    background-color: #3367D6;
 }
