@@ -1,18 +1,40 @@
-CREATE DATABASE notepad;
-USE notepad;
+CREATE DATABASE IF NOT EXISTS notepad_app
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE users (
+USE notepad_app;
+
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    google_credentials TEXT,
+    drive_folder_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE notes (
+CREATE TABLE IF NOT EXISTS notes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL DEFAULT 'Untitled',
     content TEXT NOT NULL,
-    completed BOOLEAN DEFAULT FALSE,
-    title VARCHAR(255) DEFAULT 'Untitled',
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    reminder_at DATETIME NULL,
+    reminder_sent BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS note_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    note_id INT NOT NULL,
+    filename VARCHAR(255) NOT NULL,
+    drive_file_id VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
+    INDEX idx_note_id (note_id)
 );
