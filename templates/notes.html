@@ -33,19 +33,36 @@
 
     <div class="notes">
         <form method="post"><br>
-            <input type="text" name="title" placeholder="{{ t['note_title_placeholder'] }}" required><br><br>
+            <input type="text" name="title" placeholder="{{ t['note_title_placeholder'] }}" required>
             <textarea name="content" placeholder="{{ t['write_note'] }}" required></textarea><br>
             <button type="submit">{{ t['add_note'] }}</button>
             <label for="reminder_at">{{ t['remind_at'] }}</label>
-            <input id="reminder_at" name="reminder_at" type="datetime-local" />
+            <input id="reminder_at" name="reminder_at" type="datetime-local">
         </form><br>
     </div>
     <br>
     <div class="notes">
         <h3>{{ t['your_notes'] }}</h3>
-        <button onclick="window.location.href='{{ url_for('completed_notes') }}'">{{ t['view_completed'] }}</button>
+        
+        <!-- Search input (common for both views) -->
+        <button id="toggle-notes-btn" data-view-active="{{ t['view_active'] }}" data-view-completed="{{ t['view_completed'] }}">
+            {{ t['view_completed'] }}
+        </button>
         <input type="text" id="search" placeholder="{{ t['search_notes'] }}">
-        {% include "partials/notes_list.html" %}
+        
+        <!-- Notes container wrapper -->
+        <div class="notes-container-wrapper">
+            
+            <!-- Active notes container (shown by default) -->
+            <div id="active-notes-container">
+                {% include "partials/notes_list.html" %}
+            </div>
+            
+            <!-- Completed notes container (hidden by default) -->
+            <div id="completed-notes-container" style="display: none;">
+                {% include "partials/notes_completed.html" %}
+            </div>
+        </div>
     </div>
 
     <br>

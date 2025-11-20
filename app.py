@@ -357,8 +357,15 @@ def disconnect_google():
 @app.route("/notes")
 @login_required
 def notes():
-    notes, google_connected = get_notes_with_files(completed=False)
-    return render_template("notes.html", notes=notes, google_connected=google_connected)
+    active_notes, google_connected = get_notes_with_files(completed=False)
+    completed_notes, _ = get_notes_with_files(completed=True)
+    
+    return render_template(
+        "notes.html", 
+        active_notes=active_notes, 
+        completed_notes=completed_notes, 
+        google_connected=google_connected
+    )
 
 @app.route("/completed_notes")
 @login_required
@@ -432,14 +439,35 @@ def mark_done(note_id):
 def delete_note(note_id):
     if not verify_note_ownership(note_id):
         return "Note not found or access denied", 404
-
+        
+    service = get_google_service()
+    
+    with get_db_cursor(dictionary=True) as (conn, cursor):
+        cursor.execute(
+            "SELECT id, drive_file_id FROM note_files WHERE note_id=%s",
+            (note_id,)
+        )
+        files = cursor.fetchall()
+    
+    if service and files:
+        for file in files:
+            try:
+                if file["drive_file_id"]:
+                    service.files().delete(fileId=file["drive_file_id"]).execute()
+            except Exception as e:
+                print(f"Error deleting file from Google Drive: {e}")
+    
     with get_db_cursor() as (conn, cursor):
+        cursor.execute(
+            "DELETE FROM note_files WHERE note_id=%s",
+            (note_id,)
+        )
         cursor.execute(
             "DELETE FROM notes WHERE id=%s AND user_id=%s AND completed=TRUE",
             (note_id, get_current_user_id()),
         )
 
-    return redirect(url_for("completed_notes"))
+    return redirect(url_for("notes"))
 
 # File handling routes
 @app.route("/upload_file/<int:note_id>", methods=["POST"])
@@ -535,7 +563,7 @@ def search_notes():
     search = request.args.get("q", "")
     completed = request.args.get("completed", "false").lower() == "true"
 
-    notes, google_connected = get_notes_with_files(completed=completed, search_term=search)
+    notes, _ = get_notes_with_files(completed=completed, search_term=search)
 
     template = "partials/notes_completed.html" if completed else "partials/notes_list.html"
     return render_template(template, notes=notes)

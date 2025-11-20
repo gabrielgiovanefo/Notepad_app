@@ -8,7 +8,6 @@
     "add_note": "Add Note",
     "remind_at": "Remind at",
     "your_notes": "Your Notes",
-    "view_completed": "View Completed Notes",
     "search_notes": "Search notes...",
     "credits": "© 2025 Organize — Developed by Arthur Araújo and Gabriel Giovane",
     "reminder_title": "Reminder",
@@ -29,7 +28,9 @@
     "google_connected": "Google Drive connected",
     "google_not_connected": "Google Drive not connected",
     "connect_google": "Connect Google Drive",
-    "disconnect_google": "Disconnect Google Drive"
+    "disconnect_google": "Disconnect Google Drive",
+    "view_completed": "View Completed Notes",
+    "view_active": "View Active Notes"
 },
 "pt": {
     "switch_theme": "Mudar Tema",
@@ -40,7 +41,6 @@
     "add_note": "Adicionar Nota",
     "remind_at": "Lembrar em:",
     "your_notes": "Suas Notas",
-    "view_completed": "Ver Notas Concluídas",
     "search_notes": "Pesquisar notas...",
     "credits": "© 2025 Organize — Desenvolvido por Arthur Araújo e Gabriel Giovane",
     "reminder_title": "Lembrete",
@@ -61,6 +61,8 @@
     "google_connected": "Google Drive conectado",
     "google_not_connected": "Google Drive não conectado",
     "connect_google": "Conectar ao Google Drive",
-    "disconnect_google": "Desconectar Google Drive"
+    "disconnect_google": "Desconectar Google Drive",
+    "view_completed": "Ver Notas Concluídas",
+    "view_active": "Ver Notas Ativas"
 }
 }

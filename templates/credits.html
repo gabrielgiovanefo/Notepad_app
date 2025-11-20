@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créditos — Organize</title>
     <script src="/static/script.js" defer></script>
-    <link id="theme-link" rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="credits">
-    <button id="theme-switch">Switch Theme</button>
+    <button id="theme-switch">{{ t['switch_theme'] }}</button>
     <button onclick="window.location.href='/'">Voltar</button>
     <h1>Créditos</h1>
     <h2>Objetivo do Projeto</h2>

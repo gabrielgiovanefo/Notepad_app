@@ -1,6 +1,5 @@
-<!-- partials/notes_list.html -->
 <ul id="notes-container">
-    {% for note in notes %}
+    {% for note in active_notes %}
     <li class="note"
         data-note-id="{{ note.id }}"
         data-completed="{{ '1' if note.completed else '0' }}"
@@ -9,8 +8,8 @@
         data-created-at="{{ note.created_at.strftime('%Y-%m-%dT%H:%M:%S') }}">
         
         <form id="edit-form-{{ note.id }}" method="post" action="{{ url_for('edit_note', note_id=note.id) }}" class="note-edit">
-            <input type="text" name="title" value="{{ note.title }}" placeholder="Note title" required><br><br>
-            <textarea name="content">{{ note.content }}</textarea><br>
+            <input type="text" name="title" value="{{ note.title }}" placeholder="Note title" required><br>
+            <textarea name="content">{{ note.content }}</textarea>
             
             <!-- File attachment area -->
             <div class="file-attachment-area" id="file-drop-{{ note.id }}">

@@ -3,12 +3,12 @@
 <head>
     <title>My Notes</title>
     <script src="/static/script.js" defer></script>
-    <link id="theme-link" rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body class="notepad">
-    <button id="theme-switch">Switch Theme</button> 
-    <button onclick="window.location.href='/logout'">Logout</button>
+    <button id="theme-switch">{{ t['switch_theme'] }}</button> 
+    <button onclick="window.location.href='/logout'">{{ t['logout'] }}</button>
     <div  class="notes">
       <h2>Completed Notes</h2>
       <button onclick="window.location.href='{{ url_for('notes') }}'">Back to Active Notes</button>

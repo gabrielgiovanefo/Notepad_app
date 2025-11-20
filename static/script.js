@@ -1,45 +1,75 @@
-// Consolidated DOMContentLoaded event listener
 document.addEventListener("DOMContentLoaded", async () => {
-    // Initialize all functionality
     initSearch();
+    initNoteToggle();
     initTheme();
     initNotifications();
     await initLanguage();
-    
-    // Initialize file upload functionality
     initFileUpload();
 });
 
-// Search functionality - consolidated
-function initSearch() {
-    const notesContainer = document.getElementById("notes-container");
+function initNoteToggle() {
+    const toggleBtn = document.getElementById("toggle-notes-btn");
+    const activeContainer = document.getElementById("active-notes-container");
+    const completedContainer = document.getElementById("completed-notes-container");
     
-    // Helper function for search
-    function setupSearch(searchId, completed) {
-        const searchElement = document.getElementById(searchId);
-        if (!searchElement) return;
+    if (!toggleBtn || !activeContainer || !completedContainer) return;
+    
+    // Get translations from data attributes
+    const viewActiveText = toggleBtn.getAttribute("data-view-active");
+    const viewCompletedText = toggleBtn.getAttribute("data-view-completed");
+    
+    // State to track which view is active
+    let showingCompleted = false;
+    
+    // Function to switch views
+    function switchView() {
+        showingCompleted = !showingCompleted;
         
-        searchElement.addEventListener("input", () => {
-            const query = searchElement.value;
-            fetch(`/search_notes?q=${encodeURIComponent(query)}&completed=${completed}`)
-                .then(response => {
-                    if (!response.ok) throw new Error("Search failed");
-                    return response.text();
-                })
-                .then(html => {
-                    notesContainer.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error("Search error:", error);
-                    // Optionally show user feedback
-                });
-        });
+        if (showingCompleted) {
+            activeContainer.style.display = "none";
+            completedContainer.style.display = "block";
+            toggleBtn.textContent = viewActiveText;
+        } else {
+            activeContainer.style.display = "block";
+            completedContainer.style.display = "none";
+            toggleBtn.textContent = viewCompletedText;
+        }
+        
+        // Clear search when switching views
+        document.getElementById("search").value = "";
     }
     
-    // Setup both search inputs
-    setupSearch("search", false);
-    setupSearch("completed_search", true);
+    // Set up button click handler
+    toggleBtn.addEventListener("click", switchView);
 }
+
+// Search functionality - updated to work with both views
+function initSearch() {
+    const searchInput = document.getElementById("search");
+    if (!searchInput) return;
+    
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value;
+        const isCompletedView = document.getElementById("completed-notes-container").style.display !== "none";
+        
+        fetch(`/search_notes?q=${encodeURIComponent(query)}&completed=${isCompletedView}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Search failed");
+                return response.text();
+            })
+            .then(html => {
+                if (isCompletedView) {
+                    document.getElementById("completed-notes-container").innerHTML = html;
+                } else {
+                    document.getElementById("active-notes-container").innerHTML = html;
+                }
+            })
+            .catch(error => {
+                console.error("Search error:", error);
+            });
+    });
+}
+
 
 // Theme functionality
 function initTheme() {
