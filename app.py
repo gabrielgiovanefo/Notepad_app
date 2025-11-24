@@ -2,7 +2,7 @@ import mysql.connector
 import os
 import json
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 from contextlib import contextmanager
 from dotenv import load_dotenv
@@ -15,6 +15,8 @@ from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
 
 # Load environment variables and translations
 load_dotenv()
+
+DEFAULT_REMINDER_HOURS = int(os.getenv("DEFAULT_REMINDER_HOURS", "24"))
 
 with open(os.path.join(os.path.dirname(__file__), "static/translations.json"), "r", encoding="utf-8") as f:
     TRANSLATIONS = json.load(f)
@@ -134,7 +136,6 @@ def get_user_drive_folder_id():
     return folder_id
 
 def get_notes_with_files(completed=False, search_term=None):
-    """Get notes with associated files for the current user, optionally filtered by search"""
     user_id = get_current_user_id()
     if not user_id:
         return [], False
@@ -380,7 +381,10 @@ def add_note():
     content = request.form["content"]
     reminder_at = request.form.get("reminder_at")
 
-    if reminder_at:
+    if not reminder_at:
+        default_time = datetime.now() + timedelta(hours=DEFAULT_REMINDER_HOURS)
+        reminder_at = default_time.strftime("%Y-%m-%d %H:%M:%S")
+    else:
         reminder_at = reminder_at.replace("T", " ")
         if len(reminder_at) == 16:
             reminder_at += ":00"
@@ -404,12 +408,13 @@ def edit_note(note_id):
     content = request.form["content"]
     reminder_at = request.form.get("reminder_at")
 
-    if reminder_at:
+    if not reminder_at:
+        default_time = datetime.now() + timedelta(hours=DEFAULT_REMINDER_HOURS)
+        reminder_at = default_time.strftime("%Y-%m-%d %H:%M:%S")
+    else:
         reminder_at = reminder_at.replace("T", " ")
         if len(reminder_at) == 16:
             reminder_at += ":00"
-    else:
-        reminder_at = None
 
     with get_db_cursor() as (conn, cursor):
         cursor.execute(
@@ -560,13 +565,20 @@ def download_file(file_id):
 @app.route("/search_notes")
 @login_required
 def search_notes():
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Not authorized"}), 401
+
     search = request.args.get("q", "")
     completed = request.args.get("completed", "false").lower() == "true"
 
-    notes, _ = get_notes_with_files(completed=completed, search_term=search)
+    notes, google_connected = get_notes_with_files(completed=completed, search_term=search)
 
     template = "partials/notes_completed.html" if completed else "partials/notes_list.html"
-    return render_template(template, notes=notes)
+    if completed:
+        return render_template(template, completed_notes=notes, google_connected=google_connected)
+    else:
+        return render_template(template, active_notes=notes, google_connected=google_connected)
 
 @app.route("/reminded/<int:note_id>", methods=["POST"])
 @login_required
